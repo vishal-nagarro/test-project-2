@@ -1,5 +1,3 @@
-
-
 # GitHub Actions CI Pipeline Requirements
 
 ## Overview
@@ -11,14 +9,14 @@ This document outlines the requirements for implementing a continuous integratio
 - **Application Type**: Web Application
 - **Framework**: Java Spring MVC
 - **Build Tool**: Maven
-- **Java Version**: Java 11
+- **Java Version**: Java 17
 - **Testing Framework**: JUnit
 - **Artifact Repository**: GitHub Releases
 
 ## Pipeline Triggers
 
 ### Branch-based Triggers
-- **Push Events**: Trigger on pushes to `main`, `develop`, and `release/v1` branches
+- **Push Events**: Trigger on pushes to `main` and `release/v1` branches
 - **Pull Requests**: Trigger on PRs targeting the `main` branch
 
 ### Release-based Triggers
@@ -30,18 +28,18 @@ This document outlines the requirements for implementing a continuous integratio
 ### Environment Specifications
 - **Runner**: Ubuntu Latest
 - **Java Distribution**: Temurin
-- **Java Version**: 11
+- **Java Version**: 17
 - **Maven**: Latest stable version
 
 ### Build Process
 1. **Source Code Checkout**: Clone repository using `actions/checkout@v4`
-2. **Java Environment Setup**: Configure JDK 11 with Temurin distribution
+2. **Java Environment Setup**: Configure JDK 17 with Temurin distribution
 3. **Dependency Management**: 
    - Cache Maven dependencies in `~/.m2`
    - Use repository-specific cache keys based on `pom.xml` hash
 4. **Compilation**: Execute `mvn clean compile -B`
 5. **Testing**: Run JUnit tests with `mvn test -B`
-6. **Packaging**: Create JAR artifact with `mvn package -DskipTests -B`
+6. **Packaging**: Create WAR artifact with `mvn package -DskipTests -B`
 
 ### Testing Requirements
 - **Test Framework**: JUnit integration
@@ -52,15 +50,15 @@ This document outlines the requirements for implementing a continuous integratio
 ## Artifact Management
 
 ### Build Artifacts
-- **Artifact Type**: JAR files from `target/*.jar`
+- **Artifact Type**: WAR files from `target/*.war`
 - **Storage**: GitHub Actions artifacts
 - **Retention Period**: 30 days
-- **Artifact Name**: `application-jar`
+- **Artifact Name**: `application-war`
 
 ### Release Artifacts
 - **Upload Condition**: Only on GitHub release creation
-- **Asset Naming**: `{repository-name}-{release-tag}.jar`
-- **Content Type**: `application/java-archive`
+- **Asset Naming**: `{repository-name}-{release-tag}.war`
+- **Content Type**: `application/x-java-archive`
 - **Upload Method**: GitHub Releases API
 
 ## Pipeline Jobs
@@ -70,12 +68,12 @@ This document outlines the requirements for implementing a continuous integratio
 - **Execution**: All trigger events
 - **Steps**:
   1. Checkout source code
-  2. Setup Java 11 environment
+  2. Setup Java 17 environment
   3. Cache Maven dependencies
   4. Compile application
   5. Run JUnit tests
   6. Generate test report
-  7. Build JAR file
+  7. Build WAR file
   8. Upload build artifacts
 
 ### Job 2: Release Upload
@@ -84,10 +82,10 @@ This document outlines the requirements for implementing a continuous integratio
 - **Dependency**: Requires successful completion of `build-and-test`
 - **Steps**:
   1. Checkout source code
-  2. Setup Java 11 environment
+  2. Setup Java 17 environment
   3. Cache Maven dependencies
-  4. Build application JAR
-  5. Upload JAR to GitHub Release
+  4. Build application WAR
+  5. Upload WAR to GitHub Release
 
 ## Security and Permissions
 
@@ -151,7 +149,7 @@ This document outlines the requirements for implementing a continuous integratio
 - [ ] Pipeline triggers on pushes to `release/v1` branch
 - [ ] Maven compilation completes without errors
 - [ ] JUnit tests execute and results are reported
-- [ ] JAR artifacts are generated and uploaded appropriately
+- [ ] WAR artifacts are generated and uploaded appropriately
 - [ ] Release artifacts are attached to GitHub releases
 
 ### Non-functional Requirements
