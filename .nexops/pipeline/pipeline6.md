@@ -9,7 +9,7 @@ This document outlines the requirements for implementing a continuous integratio
 - **Application Type**: Web Application
 - **Framework**: Java Spring MVC
 - **Build Tool**: Maven
-- **Java Version**: Java 17
+- **Java Version**: Java 11
 - **Testing Framework**: JUnit
 - **Artifact Repository**: GitHub Releases
 
@@ -26,14 +26,17 @@ This document outlines the requirements for implementing a continuous integratio
 ## Technical Requirements
 
 ### Environment Specifications
-- **Runner**: Ubuntu Latest
+- **Runner**: windows-runner
 - **Java Distribution**: Temurin
-- **Java Version**: 17
+- **Java Version**: 11
 - **Maven**: Latest stable version
+
+### Environment Variables
+- **Notification Email**: `${{ env.NOTIFICATION_MAIL }}` - Email address for pipeline failure notifications
 
 ### Build Process
 1. **Source Code Checkout**: Clone repository using `actions/checkout@v4`
-2. **Java Environment Setup**: Configure JDK 17 with Temurin distribution
+2. **Java Environment Setup**: Configure JDK 11 with Temurin distribution
 3. **Dependency Management**: 
    - Cache Maven dependencies in `~/.m2`
    - Use repository-specific cache keys based on `pom.xml` hash
@@ -68,13 +71,14 @@ This document outlines the requirements for implementing a continuous integratio
 - **Execution**: All trigger events
 - **Steps**:
   1. Checkout source code
-  2. Setup Java 17 environment
+  2. Setup Java 11 environment
   3. Cache Maven dependencies
   4. Compile application
   5. Run JUnit tests
   6. Generate test report
   7. Build WAR file
   8. Upload build artifacts
+  9. Send failure notification (if pipeline fails)
 
 ### Job 2: Release Upload
 - **Name**: `upload-to-releases`
@@ -82,10 +86,20 @@ This document outlines the requirements for implementing a continuous integratio
 - **Dependency**: Requires successful completion of `build-and-test`
 - **Steps**:
   1. Checkout source code
-  2. Setup Java 17 environment
+  2. Setup Java 11 environment
   3. Cache Maven dependencies
   4. Build application WAR
   5. Upload WAR to GitHub Release
+  6. Send failure notification (if pipeline fails)
+
+## Notification Requirements
+
+### Failure Notification
+- **Trigger Condition**: Pipeline failure on any job
+- **Notification Method**: Email notification
+- **Recipient**: Configured via `NOTIFICATION_MAIL` environment variable
+- **Notification Content**: Include failure details, job name, and error logs
+- **Execution**: Run only when pipeline status is 'failure'
 
 ## Security and Permissions
 
@@ -121,6 +135,7 @@ This document outlines the requirements for implementing a continuous integratio
 - **Immediate Failure**: Stop pipeline on critical errors
 - **Error Context**: Provide detailed error messages
 - **Debugging Support**: Retain build logs and artifacts
+- **Email Notifications**: Send failure notifications to configured email address
 
 ## File Structure Requirements
 
@@ -141,6 +156,7 @@ This document outlines the requirements for implementing a continuous integratio
 - **Non-interactive Mode**: Use `-B` flag for Maven batch mode
 - **Clean Builds**: Always start with `mvn clean` to ensure consistency
 - **Test Isolation**: Separate test execution from packaging steps
+- **Notification Configuration**: Use environment variables for email configuration
 
 ## Success Criteria
 
@@ -151,6 +167,7 @@ This document outlines the requirements for implementing a continuous integratio
 - [ ] JUnit tests execute and results are reported
 - [ ] WAR artifacts are generated and uploaded appropriately
 - [ ] Release artifacts are attached to GitHub releases
+- [ ] Email notifications are sent on pipeline failures
 
 ### Non-functional Requirements
 - [ ] Pipeline completes within reasonable time limits
@@ -158,6 +175,7 @@ This document outlines the requirements for implementing a continuous integratio
 - [ ] Test results are clearly visible and accessible
 - [ ] Artifacts are properly versioned and stored
 - [ ] Security permissions are correctly configured
+- [ ] Failure notifications are delivered promptly and accurately
 
 ## Maintenance Considerations
 
@@ -165,5 +183,6 @@ This document outlines the requirements for implementing a continuous integratio
 - Monitor and update GitHub Actions versions
 - Review Java version compatibility
 - Update Maven dependencies as needed
+- Verify email notification configuration remains valid
 
 This requirements document provides the foundation for implementing a robust CI pipeline that meets the specified technical and operational requirements for the Java Spring MVC web application.
