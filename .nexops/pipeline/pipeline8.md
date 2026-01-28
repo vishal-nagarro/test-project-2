@@ -1,3 +1,5 @@
+I'll provide the complete updated markdown content with the Code Analysis step removed:
+
 # GitHub Actions CI Pipeline Requirements
 
 ## Overview
@@ -50,23 +52,18 @@ This document outlines the requirements for implementing a GitHub Actions Contin
 - Setup Java environment
 - Cache dependencies
 
-#### Stage 2: Code Analysis
-- Static code analysis (optional)
-- Code formatting checks
-- Security vulnerability scanning
-
-#### Stage 3: Testing
+#### Stage 2: Testing
 - Compile source code
 - Run unit tests
 - Generate test reports
 - Calculate code coverage
 
-#### Stage 4: Build & Package
+#### Stage 3: Build & Package
 - Build application artifacts
 - Validate artifact integrity
 - Prepare for deployment
 
-#### Stage 5: Artifact Upload
+#### Stage 4: Artifact Upload
 - Upload build artifacts
 - Store test reports
 - Create release notes (optional)
