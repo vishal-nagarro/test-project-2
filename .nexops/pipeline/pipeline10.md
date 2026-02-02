@@ -35,6 +35,7 @@ This document outlines the requirements for a GitHub Actions CI build pipeline f
 - Run unit tests using Maven test command
 - Fail pipeline if any tests fail
 - Generate and preserve test reports
+- Upload test reports as GitHub Actions Artifacts
 
 ### 3. Code Quality Analysis
 - Execute SonarQube scan
@@ -62,7 +63,7 @@ mvn sonar:sonar
 
 ### Artifacts to Upload
 - Generated WAR files from target directory
-- Test reports (optional)
+- Test reports
 - SonarQube analysis reports (optional)
 
 ## Implementation Notes
@@ -87,6 +88,7 @@ mvn sonar:sonar
 - Java 17 environment is properly configured
 - Maven build completes successfully
 - Unit tests execute and pass
+- Test reports are generated and uploaded as artifacts
 - SonarQube scan completes and reports results
 - WAR files are successfully uploaded as artifacts
 - All failures are properly reported and stop pipeline execution
